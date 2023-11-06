@@ -84,38 +84,22 @@ class ProductManager {
         this.saveToFile();
         console.log("Producto eliminado con éxito.");
     }
+
+    getProducts(){
+        const product = this.products;
+        if(!product){
+            console.log('Sin productos');
+            return;
+        }
+
+        if(product.length <= 0){
+            console.log('Sin productos');
+            return;
+        }
+        
+        return product;
+    }
 }
 
 
-
-// Ejemplo a ver si funciona 
-const filePath = 'productos.json';
-const manager = new ProductManager(filePath);
-
-manager.addProduct({
-    title: "Producto 1",
-    description: "Descripción del Producto 1",
-    price: 19.99,
-    thumbnail: "imagen1.jpg",
-    code: "P1",
-    stock: 10,
-});
-
-manager.addProduct({
-    title: "Producto 2",
-    description: "Descripción del Producto 2",
-    price: 29.99,
-    thumbnail: "imagen2.jpg",
-    code: "P2",
-    stock: 5,
-});
-
-console.log(manager.getProducts());
-
-const product = manager.getProductById(2);
-if (product) {
-    console.log("Producto encontrado:", product);
-}
-
-manager.updateProduct(2, { price: 39.99 }); // Actualizar el precio del Producto 2
-manager.deleteProduct(1); // Eliminar el Producto 1
+module.exports=ProductManager

@@ -23,9 +23,9 @@ class ProductManager {
     }
 
     addProduct(productData) {
-        const { title, description, price, thumbnail, code, stock } = productData;
+        const { title, description, price, thumbnail, category, code, stock } = productData;
 
-        if (!title || !description || !price || !thumbnail || !code || stock === undefined) {
+        if (!title || !description || !price || !code || !category || !stock ) {
             console.log("Todos los campos son obligatorios");
             return;
         }
@@ -44,6 +44,7 @@ class ProductManager {
             thumbnail,
             code,
             stock,
+            category,
         };
 
         this.products.push(newProduct);

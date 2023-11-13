@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const ProductManager = require('./ProductManager');
+const CartManager = require("./CartManager");
 const port = 3000;
 
 app.use(express.json());
@@ -9,7 +10,13 @@ app.use(express.json());
 const filePath = 'productos.json';
 const manager = new ProductManager(filePath);
 
+// Cart
+const filePathCart = 'carts.json';
+const cart = new CartManager(filePathCart);
 
+
+
+//products
 app.get('/products', (req, res) => {
     const limit = req.query.limit;
     const products = manager.getProducts();
@@ -32,6 +39,51 @@ app.get('/products/:pid', (req, res) => {
         res.status(404).json({ error: "Producto no encontrado" });
     }
 });
+
+//carts
+app.post('/carts', (req, res) => {
+    if(!req.body.products){
+        return res.status(400).json({error: "No se encontraron productos"});
+    }
+    //solo numeros
+    const validateNumber = req.body.products.filter( (p) => Number.isInteger(p));
+    if(validateNumber.length !== req.body.products.length){
+        return  res.status(400).json({error: "Solo se permiten numero de productos"});
+    }
+
+    cart.addCart(req.body);
+    return res.json({});
+});
+
+app.get('/carts/:cid', (req, res) => {
+    const cartId = parseInt(req.params.cid);
+    const response = cart.getCartById(cartId);
+    if (response) {
+        res.json(response);
+    } else {
+        res.status(404).json({ error: "Cart no encontrado" });
+    }
+});
+
+app.put('/carts/:cid/products/:pid', (req, res) => {
+    console.log(req.params);
+    cart.addProductToCart( parseInt(req.params.cid), parseInt(req.params.pid));
+    res.json();
+});
+
+
+
+// Ruta para obtener un producto por ID
+app.get('/carts/:pid', (req, res) => {
+    const productId = parseInt(req.params.pid);
+    const product = manager.getProductById(productId);
+    if (product) {
+        res.json(product);
+    } else {
+        res.status(404).json({ error: "Producto no encontrado" });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Servidor Express en ejecución en el puerto ${port}`);
